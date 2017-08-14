@@ -6,7 +6,8 @@ public class HeadFirstJava {
 
     public static void main(String[] args) {
         Page_63 p63 = new Page_63();
-        p63.TestDrive();
+        p63.BooksTestDrive();
+        p63.Hobbits();
     }
 
 }

@@ -1,8 +1,8 @@
 package Chapter_2;
 
-public final class Page_63 {
+public class Page_63 {
 
-    public void TestDrive() {
+    public void BooksTestDrive() {
         Books[] myBooks = new Books[3];
         // Missing code parts
         myBooks[0] = new Books();
@@ -24,11 +24,28 @@ public final class Page_63 {
             x = x + 1;
         }
     }
+    
+    public void Hobbits(){
+        Hobbits[] h = new Hobbits[3];
+        int z = 0;
+        while(z < 3){
+            h[z] = new Hobbits();
+            h[z].name = "bilbo";
+            if(z == 1) h[z].name = "frodo";
+            if(z == 2) h[z].name = "sam";
+            System.out.print(h[z].name + " is a ");
+            System.out.println("good Hobbit name.");
+            z++;
+        }
+    }
 
 }
 
 class Books {
+    String title;
+    String author;
+}
 
-    public String title;
-    public String author;
+class Hobbits{
+    String name;
 }
