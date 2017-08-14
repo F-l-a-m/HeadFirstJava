@@ -1,8 +1,8 @@
 package Chapter_3;
 
-public class Page_63 {
+public final class Page_63 {
 
-    public void BooksTestDrive() {
+    public static void BooksTestDrive() {
         Books[] myBooks = new Books[3];
         // Missing code parts
         myBooks[0] = new Books();

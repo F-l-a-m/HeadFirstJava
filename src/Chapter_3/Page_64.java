@@ -1,7 +1,7 @@
 package Chapter_3;
 
-public class Page_64 {
-    public void Islands(){
+public final class Page_64 {
+    public static void Islands(){
         String[] islands = new String[4];
         int[] index = new int[4];
         islands[0] = "Bermuda";
