@@ -7,6 +7,7 @@ import Chapter_2.Page_44;
 import Chapter_3.Page_63;
 import Chapter_3.Page_64;
 import Chapter_3.Page_65;
+import Chapter_4.Page_88;
 
 public class HeadFirstJava {
 
@@ -18,7 +19,9 @@ public class HeadFirstJava {
         //Page_44.Echo();
         //Page_63.BooksTestDrive();
         //Page_64.Islands();
-        Page_65.PoolPuzzle();
+        //Page_65.PoolPuzzle();
+        Page_88.Copy();
+        Page_88.ClockTestDrive();
     }
 
 }
