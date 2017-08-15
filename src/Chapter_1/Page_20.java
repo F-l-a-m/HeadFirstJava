@@ -2,7 +2,7 @@ package Chapter_1;
 
 public final class Page_20 {
 
-    public static void Run() {
+    public static void Abcd() {
         
         int x = 3;
 

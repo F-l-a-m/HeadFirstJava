@@ -2,7 +2,7 @@ package Chapter_2;
 
 public final class Page_43 {
 
-    public static void Run() {
+    public static void DrumKitTest() {
         DrumKit d = new DrumKit();
         d.playSnare();
         d.snare = false;
