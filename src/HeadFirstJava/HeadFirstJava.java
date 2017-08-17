@@ -9,6 +9,7 @@ import Chapter_3.Page_64;
 import Chapter_3.Page_65;
 import Chapter_4.Page_88;
 import Chapter_4.Page_91;
+import Chapter_5.SimpleDotComGame;
 
 public class HeadFirstJava {
 
@@ -23,7 +24,9 @@ public class HeadFirstJava {
         //Page_65.PoolPuzzle();
         //Page_88.Copy();
         //Page_88.ClockTestDrive();
-        Page_91.Puzzle4();
+        //Page_91.Puzzle4();
+        //SimpleDotComGame.SimpleDotComTestDrive();
+        SimpleDotComGame.PlayGame();
     }
 
 }
