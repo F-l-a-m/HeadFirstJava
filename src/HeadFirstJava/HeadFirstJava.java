@@ -27,7 +27,8 @@ public class HeadFirstJava {
         //Page_119.CodeMagnets();
         //DotComGame.PlayGame();
         //Page_161.CodeMagnets();
-        Page_192.MixedMessages();
+        //Page_192.MixedMessages();
+        Page_194.TestBoats();
     }
 
 }
