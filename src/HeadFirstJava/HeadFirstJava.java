@@ -7,6 +7,7 @@ import Chapter_4.*;
 import Chapter_5.*;
 import Chapter_6.*;
 import Chapter_7.*;
+import Chapter_8.*;
 
 public class HeadFirstJava {
 
@@ -28,7 +29,8 @@ public class HeadFirstJava {
         //DotComGame.PlayGame();
         //Page_161.CodeMagnets();
         //Page_192.MixedMessages();
-        Page_194.TestBoats();
+        //Page_194.TestBoats();
+        Page_234.PoolPuzzle();
     }
 
 }
