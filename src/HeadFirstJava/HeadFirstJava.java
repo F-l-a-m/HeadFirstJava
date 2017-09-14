@@ -8,6 +8,7 @@ import Chapter_5.*;
 import Chapter_6.*;
 import Chapter_7.*;
 import Chapter_8.*;
+import Chapter_10.*;
 
 public class HeadFirstJava {
 
@@ -30,7 +31,10 @@ public class HeadFirstJava {
         //Page_161.CodeMagnets();
         //Page_192.MixedMessages();
         //Page_194.TestBoats();
-        Page_234.PoolPuzzle();
+        //Page_234.PoolPuzzle();
+        //Ch10_DateTime.DateAndTimeFun();
+        //Page_310.BeTheCompiler();
+        Page_312.CodeMagnets();
     }
 
 }
