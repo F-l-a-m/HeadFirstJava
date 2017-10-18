@@ -9,6 +9,7 @@ import Chapter_6.*;
 import Chapter_7.*;
 import Chapter_8.*;
 import Chapter_10.*;
+import Chapter_11.*;
 
 public class HeadFirstJava {
 
@@ -34,7 +35,9 @@ public class HeadFirstJava {
         //Page_234.PoolPuzzle();
         //Ch10_DateTime.DateAndTimeFun();
         //Page_310.BeTheCompiler();
-        Page_312.CodeMagnets();
+        //Page_312.CodeMagnets();
+        String[] arg = {"102", "30"};
+        Page_342.MiniMusicCmdLine(arg);
     }
 
 }
