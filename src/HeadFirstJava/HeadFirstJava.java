@@ -36,8 +36,10 @@ public class HeadFirstJava {
         //Ch10_DateTime.DateAndTimeFun();
         //Page_310.BeTheCompiler();
         //Page_312.CodeMagnets();
-        String[] arg = {"102", "30"};
-        Page_342.MiniMusicCmdLine(arg);
+        //String[] arg = {"102", "30"};
+        //Page_342.MiniMusicCmdLine(arg);
+        String[] arg = {"yes", "no"};
+        Page_349.CodeMagnets(arg);
     }
 
 }
