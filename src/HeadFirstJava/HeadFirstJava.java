@@ -10,6 +10,7 @@ import Chapter_7.*;
 import Chapter_8.*;
 import Chapter_10.*;
 import Chapter_11.*;
+import Chapter_12.*;
 
 public class HeadFirstJava {
 
@@ -38,8 +39,9 @@ public class HeadFirstJava {
         //Page_312.CodeMagnets();
         //String[] arg = {"102", "30"};
         //Page_342.MiniMusicCmdLine(arg);
-        String[] arg = {"yes", "no"};
-        Page_349.CodeMagnets(arg);
+        //String[] arg = {"yes", "no"};
+        //Page_349.CodeMagnets(arg);
+        Page_355.start();
     }
 
 }
