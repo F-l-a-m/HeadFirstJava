@@ -46,7 +46,8 @@ public class HeadFirstJava {
         //Page_389.start();
         //Page_390.start();
         //Page_391.start();
-        Page_395.beTheCompiler();
+        //Page_395.beTheCompiler();
+        Page_396.poolPuzzle();
     }
 
 }
