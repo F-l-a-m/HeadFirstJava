@@ -19,11 +19,11 @@ class Animate {
         frame.getContentPane().add(drawP);
         frame.setSize(500, 270);
         frame.setVisible(true);
-        for(int i = 0; i < 124; i++, y++){
+        for(int i = 0; i < 124; i++, x++, y++){
             x++;
             frame.repaint();
             try{
-                Thread.sleep(25);
+                Thread.sleep(50);
             } catch (Exception ex) { }
         }
         frame.repaint();
@@ -31,8 +31,9 @@ class Animate {
     
     class MyDrawP extends JPanel {
         public void paintComponent(Graphics g){
+            g.setColor(Color.white);
+            g.fillRect(0, 0, 500, 250);
             g.setColor(Color.blue);
-            //g.fillRect(500 - x * 2, 250 - y * 2, x, y);
             g.fillRect(x, y, 500 - x * 2, 250 - y * 2);
         }
     }
