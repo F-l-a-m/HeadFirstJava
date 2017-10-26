@@ -11,6 +11,7 @@ import Chapter_8.*;
 import Chapter_10.*;
 import Chapter_11.*;
 import Chapter_12.*;
+import Chapter_13.*;
 
 public class HeadFirstJava {
 
@@ -47,7 +48,7 @@ public class HeadFirstJava {
         //Page_390.start();
         //Page_391.start();
         //Page_395.beTheCompiler();
-        Page_396.poolPuzzle();
+        //Page_396.poolPuzzle();
+        new BeatBox().buildGUI();
     }
-
 }
