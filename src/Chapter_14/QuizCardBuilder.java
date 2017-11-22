@@ -7,7 +7,7 @@ import java.awt.*;
 import java.io.*;
 
 public class QuizCardBuilder {
-/*
+
     private JTextArea question;
     private JTextArea answer;
     private ArrayList<QuizCard> cardList;
@@ -16,6 +16,7 @@ public class QuizCardBuilder {
     public void go() {
         // build GUI
         frame = new JFrame("Quiz Card Builder");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel mainPanel = new JPanel();
         Font bigFont = new Font("sanserif", Font.BOLD, 24);
         question = new JTextArea(6, 20);
@@ -53,10 +54,13 @@ public class QuizCardBuilder {
         JMenu fileMenu = new JMenu("File");
         JMenuItem newMenuItem = new JMenuItem("New");
         JMenuItem saveMenuItem = new JMenuItem("Save");
+        JMenuItem closeMenuItem = new JMenuItem("Close");
         newMenuItem.addActionListener(new NewMenuListener());
         saveMenuItem.addActionListener(new SaveMenuListener());
+        closeMenuItem.addActionListener(new CloseMenuListener());
         fileMenu.add(newMenuItem);
         fileMenu.add(saveMenuItem);
+        fileMenu.add(closeMenuItem);
         menuBar.add(fileMenu);
         frame.setJMenuBar(menuBar);
         frame.getContentPane().add(BorderLayout.CENTER, mainPanel);
@@ -67,20 +71,9 @@ public class QuizCardBuilder {
     private class NextCardListener implements ActionListener {
 
         public void actionPerformed(ActionEvent ev) {
-            QuizCard card = new QuizCard(question.getText(), answer.getText())
+            QuizCard card = new QuizCard(question.getText(), answer.getText());
             cardList.add(card);
             clearCard();
-        }
-    }
-
-    private class SaveMenuListener implements ActionListener {
-
-        public void actionPerformed(ActionEvent ev) {
-            QuizCard card = new QuizCard(question.getText(), answer.getText())
-            cardList.add(card);
-            JFileChooser fileSave = new JFileChooser();
-            fileSave.showSaveDialog(frame);
-            saveFile(fileSave.getSelectedFile());
         }
     }
 
@@ -89,6 +82,24 @@ public class QuizCardBuilder {
         public void actionPerformed(ActionEvent ev) {
             cardList.clear();
             clearCard();
+        }
+    }
+    
+    private class SaveMenuListener implements ActionListener {
+
+        public void actionPerformed(ActionEvent ev) {
+            QuizCard card = new QuizCard(question.getText(), answer.getText());
+            cardList.add(card);
+            JFileChooser fileSave = new JFileChooser();
+            fileSave.showSaveDialog(frame);
+            saveFile(fileSave.getSelectedFile());
+        }
+    }
+    
+    private class CloseMenuListener implements ActionListener {
+        
+        public void actionPerformed(ActionEvent ev){
+            System.exit(0);
         }
     }
     
@@ -110,5 +121,5 @@ public class QuizCardBuilder {
             System.out.println("Couldn't write the card list out.");
             ex.printStackTrace();
         }
-    }*/
+    }
 }

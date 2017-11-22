@@ -13,7 +13,7 @@ public class VerySimpleTextEditor {
     private JFrame frame;
 
     public void buildGUI() {
-        frame = new JFrame("Text Editor");
+        frame = new JFrame("Very Simple Text Editor");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
@@ -22,10 +22,6 @@ public class VerySimpleTextEditor {
         textArea = new JTextArea(10, 20);
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
-        /*Dimension d;
-        d = panel.getSize();
-        textArea.setSize(d);
-        panel.add(textArea);*/
         JScrollPane tScroller = new JScrollPane(textArea);
         tScroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         tScroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);

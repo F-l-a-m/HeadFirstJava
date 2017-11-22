@@ -1,7 +1,6 @@
 package Chapter_14;
 
 import java.io.*;
-import java.util.*;
 
 public class ReadWriteFile {
 

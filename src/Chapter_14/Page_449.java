@@ -2,8 +2,10 @@ package Chapter_14;
 
 public final class Page_449 {
 
-    public static void QuizCardGame() {
+    public static void launchQuizCardGame() {
         QuizCardBuilder builder = new QuizCardBuilder();
-        //builder.go();
+        builder.go();
+        QuizCardPlayer player = new QuizCardPlayer();
+        player.go();
     }
 }

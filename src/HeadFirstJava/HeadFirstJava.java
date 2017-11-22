@@ -53,7 +53,8 @@ public class HeadFirstJava {
         //new BeatBox().buildGUI();
         //ReadWriteTest.testRead();
         //ReadWriteTest.testWrite();
-        VerySimpleTextEditor t = new VerySimpleTextEditor();
-        t.buildGUI();
+        //VerySimpleTextEditor t = new VerySimpleTextEditor();
+        //t.buildGUI();
+        Page_449.launchQuizCardGame();
     }
 }
