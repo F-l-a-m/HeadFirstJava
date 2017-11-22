@@ -5,30 +5,27 @@ import java.util.*;
 
 public class ReadWriteFile {
 
-    public ArrayList<String> readTextFile(String filename) { //Returns an array of Strings
-        ArrayList<String> text = new ArrayList<>();
+    public String readTextFile(File file) {
+        String output = "";
         try {
-            File aFile = new File(filename);
-            BufferedReader reader = new BufferedReader(new FileReader(aFile));
+            BufferedReader reader = new BufferedReader(new FileReader(file));
             String line;
             while ((line = reader.readLine()) != null) {
                 //System.out.println(line);
-                text.add(line);
+                line += "\n";
+                output += line;
             }
             reader.close();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        return text;
+        return output;
     }
 
-    public void writeTextFile(String fileName, ArrayList<String> text) {
+    public void writeTextFile(File aFile, String aString) {
         try {
-            File aFile = new File(fileName);
             BufferedWriter writer = new BufferedWriter(new FileWriter(aFile));
-            for (String line : text) {
-                writer.write(line + "\n");
-            }
+            writer.write(aString);
             writer.close();
             System.out.println("New file was written to: ");
             System.out.println(aFile.getAbsolutePath());

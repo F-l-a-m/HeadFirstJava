@@ -52,6 +52,8 @@ public class HeadFirstJava {
         //Page_396.poolPuzzle();
         //new BeatBox().buildGUI();
         //ReadWriteTest.testRead();
-        ReadWriteTest.testWrite();
+        //ReadWriteTest.testWrite();
+        VerySimpleTextEditor t = new VerySimpleTextEditor();
+        t.buildGUI();
     }
 }
