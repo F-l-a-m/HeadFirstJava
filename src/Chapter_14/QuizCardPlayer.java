@@ -22,6 +22,7 @@ public class QuizCardPlayer {
         frame = new JFrame("Quiz Card Player");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout());
         Font bigFont = new Font("sanserif", Font.BOLD, 24);
 
         display = new JTextArea(10, 20);
@@ -32,10 +33,10 @@ public class QuizCardPlayer {
         JScrollPane qScroller = new JScrollPane(display);
         qScroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         qScroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        nextButton = new JButton("Show Question");
+        nextButton = new JButton("Show Answer");
         mainPanel.add(qScroller);
-        mainPanel.add(nextButton);
         nextButton.addActionListener(new NextCardListener());
+        nextButton.setEnabled(false);
 
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
@@ -49,7 +50,8 @@ public class QuizCardPlayer {
 
         frame.setJMenuBar(menuBar);
         frame.getContentPane().add(BorderLayout.CENTER, mainPanel);
-        frame.setSize(640, 500);
+        frame.getContentPane().add(BorderLayout.SOUTH, nextButton);
+        frame.setSize(580, 420);
         frame.setVisible(true);
 
     }
@@ -80,7 +82,11 @@ public class QuizCardPlayer {
         public void actionPerformed(ActionEvent ev) {
             JFileChooser fileOpen = new JFileChooser();
             fileOpen.showOpenDialog(frame);
-            loadFile(fileOpen.getSelectedFile());
+            File selectedFile = fileOpen.getSelectedFile();
+            if(selectedFile != null){
+                loadFile(selectedFile);
+                nextButton.setEnabled(true);
+            }
         }
     }
     
@@ -95,12 +101,12 @@ public class QuizCardPlayer {
         cardList = new ArrayList<QuizCard>();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(file));
-            String line = null;
+            String line;
             while ((line = reader.readLine()) != null) {
                 makeCard(line);
             }
             reader.close();
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             System.out.println("Couldn’t read the card file");
             ex.printStackTrace();
         }
@@ -118,7 +124,8 @@ public class QuizCardPlayer {
     private void showNextCard() {
         currentCard = cardList.get(currentCardIndex);
         currentCardIndex++;
-        display.setText("Show answer");
+        //display.setText("Show answer");
+        display.setText(currentCard.getQuestion());
         isShowAnswer = true;
     }
 }
