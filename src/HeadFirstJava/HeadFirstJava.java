@@ -50,11 +50,11 @@ public class HeadFirstJava {
         //Page_391.start();
         //Page_395.beTheCompiler();
         //Page_396.poolPuzzle();
-        //new BeatBox().buildGUI();
+        new BeatBox().buildGUI();
         //ReadWriteTest.testRead();
         //ReadWriteTest.testWrite();
         //VerySimpleTextEditor t = new VerySimpleTextEditor();
         //t.buildGUI();
-        Page_449.launchQuizCardGame();
+        //Page_449.launchQuizCardGame();
     }
 }

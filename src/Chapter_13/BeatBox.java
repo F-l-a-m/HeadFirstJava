@@ -5,6 +5,7 @@ import javax.swing.*;
 import javax.sound.midi.*;
 import java.util.*;
 import java.awt.event.*;
+import java.io.*;
 
 public class BeatBox {
 
@@ -47,6 +48,14 @@ public class BeatBox {
         downTempo.addActionListener(new MyDownTempoListener());
         buttonBox.add(downTempo);
 
+        JButton savePattern = new JButton("Save");
+        savePattern.addActionListener(new MySaveListener());
+        buttonBox.add(savePattern);
+
+        JButton restorePattern = new JButton("Restore");
+        restorePattern.addActionListener(new MyRestoreListener());
+        buttonBox.add(restorePattern);
+
         Box nameBox = new Box(BoxLayout.Y_AXIS);
         for (int i = 0; i < 16; i++) {
             nameBox.add(new Label(instrumentNames[i]));
@@ -84,7 +93,9 @@ public class BeatBox {
             sequence = new Sequence(Sequence.PPQ, 4);
             track = sequence.createTrack();
             sequencer.setTempoInBPM(120);
-        } catch (Exception ex) { ex.printStackTrace(); }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     public void buildTrackAndStart() {
@@ -117,7 +128,9 @@ public class BeatBox {
             sequencer.setLoopCount(sequencer.LOOP_CONTINUOUSLY);
             sequencer.start();
             sequencer.setTempoInBPM(120);
-        } catch (Exception ex) { ex.printStackTrace(); }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     class MyStartListener implements ActionListener {
@@ -150,6 +163,62 @@ public class BeatBox {
         }
     }
 
+    class MySaveListener implements ActionListener {
+
+        public void actionPerformed(ActionEvent ev) {
+            JFileChooser fileSave = new JFileChooser();
+            fileSave.showSaveDialog(theFrame);
+            File selectedFile = fileSave.getSelectedFile();
+            if (selectedFile != null) {
+                boolean[] checkboxState = new boolean[256];
+                JCheckBox cb;
+                for (int i = 0; i < 256; i++) {
+                    cb = (JCheckBox) checkboxList.get(i);
+                    if (cb.isSelected()) {
+                        checkboxState[i] = true;
+                    }
+                }
+                try {
+                    FileOutputStream fs = new FileOutputStream(selectedFile);
+                    ObjectOutputStream os = new ObjectOutputStream(fs);
+                    os.writeObject(checkboxState);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
+
+    class MyRestoreListener implements ActionListener {
+
+        public void actionPerformed(ActionEvent ev) {
+            JFileChooser fileOpen = new JFileChooser();
+            fileOpen.showOpenDialog(theFrame);
+            File selectedFile = fileOpen.getSelectedFile();
+            if (selectedFile != null) {
+                boolean[] checkboxState = null;
+                try {
+                    FileInputStream fs = new FileInputStream(selectedFile);
+                    ObjectInputStream os = new ObjectInputStream(fs);
+                    checkboxState = (boolean[]) os.readObject();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                JCheckBox cb;
+                for (int i = 0; i < 256; i++) {
+                    cb = (JCheckBox) checkboxList.get(i);
+                    if (checkboxState[i]) {
+                        cb.setSelected(true);
+                    } else {
+                        cb.setSelected(false);
+                    }
+                }
+                sequencer.stop();
+                buildTrackAndStart();
+            }
+        }
+    }
+
     public void makeTracks(int[] list) {
         for (int i = 0; i < 16; i++) {
             int key = list[i];
@@ -167,7 +236,9 @@ public class BeatBox {
             ShortMessage a = new ShortMessage();
             a.setMessage(comd, chan, one, two);
             event = new MidiEvent(a, tick);
-        } catch (Exception ex) { ex.printStackTrace(); }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         return event;
     }
 }
