@@ -13,6 +13,7 @@ import Chapter_11.*;
 import Chapter_12.*;
 import Chapter_13.*;
 import Chapter_14.*;
+import Chapter_15.*;
 
 public class HeadFirstJava {
 
@@ -56,6 +57,15 @@ public class HeadFirstJava {
         //VerySimpleTextEditor t = new VerySimpleTextEditor();
         //t.buildGUI();
         //Page_449.launchQuizCardGame();
-        Page_467.codeMagnets();
+        //Page_467.codeMagnets();
+        /* 15th Chapter */
+        Runnable threadJob = new DailyAdviceServer();
+        Thread serverThread = new Thread(threadJob);
+        serverThread.start();
+        System.out.println("Back in main");
+        DailyAdviceClient client = new DailyAdviceClient();
+        client.go();
+        
+        
     }
 }
