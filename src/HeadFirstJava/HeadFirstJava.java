@@ -59,13 +59,18 @@ public class HeadFirstJava {
         //Page_449.launchQuizCardGame();
         //Page_467.codeMagnets();
         /* 15th Chapter */
+        /*
         Runnable threadJob = new DailyAdviceServer();
         Thread serverThread = new Thread(threadJob);
         serverThread.start();
         System.out.println("Back in main");
         DailyAdviceClient client = new DailyAdviceClient();
         client.go();
-        
-        
+        */
+        Runnable threadJob = new VerySimpleChatServer();
+        Thread serverThread = new Thread(threadJob);
+        serverThread.start();
+        SimpleChatClient chatClient = new SimpleChatClient();
+        chatClient.go();
     }
 }
