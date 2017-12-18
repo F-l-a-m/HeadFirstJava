@@ -74,6 +74,11 @@ public class HeadFirstJava {
         SimpleChatClient chatClient = new SimpleChatClient();
         chatClient.go();
         */
-        Page_524.codeMagnets();
+        //Page_524.codeMagnets();
+        Runnable threadJob = new MusicServer();
+        Thread serverThread = new Thread(threadJob);
+        serverThread.start();
+        BeatBoxFinal beatBox = new BeatBoxFinal();
+        beatBox.startUp("Flam");
     }
 }
