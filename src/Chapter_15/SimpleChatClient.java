@@ -11,34 +11,41 @@ public class SimpleChatClient {
 
     JTextArea incoming;
     JTextField outgoing;
+    JTextField nickname;
+    JLabel nickLabel;
     BufferedReader reader;
     PrintWriter writer;
     Socket sock;
 
     public void go() {
+        //GUI
         JFrame frame = new JFrame("Ludicrously Simple Chat Client");
         JPanel mainPanel = new JPanel();
-        incoming = new JTextArea(15, 20);
+        incoming = new JTextArea(15, 30);
         incoming.setLineWrap(true);
         incoming.setWrapStyleWord(true);
         incoming.setEditable(false);
         JScrollPane qScroller = new JScrollPane(incoming);
         qScroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         qScroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        outgoing = new JTextField(20);
+        outgoing = new JTextField(24);
         JButton sendButton = new JButton("Send");
         sendButton.addActionListener(new SendButtonListener());
+        nickname = new JTextField(15);
+        nickLabel = new JLabel("Nickname");
         mainPanel.add(qScroller);
         mainPanel.add(outgoing);
         mainPanel.add(sendButton);
-        setUpNetworking();
+        mainPanel.add(nickLabel);
+        mainPanel.add(nickname);
         
+        setUpNetworking();
 
         Thread readerThread = new Thread(new IncomingReader());
         readerThread.start();
 
         frame.getContentPane().add(BorderLayout.CENTER, mainPanel);
-        frame.setSize(400, 500);
+        frame.setSize(400, 400);
         frame.setVisible(true);
     }
 

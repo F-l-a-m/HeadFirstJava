@@ -67,10 +67,13 @@ public class HeadFirstJava {
         DailyAdviceClient client = new DailyAdviceClient();
         client.go();
         */
+        /*
         Runnable threadJob = new VerySimpleChatServer();
         Thread serverThread = new Thread(threadJob);
         serverThread.start();
         SimpleChatClient chatClient = new SimpleChatClient();
         chatClient.go();
+        */
+        Page_524.codeMagnets();
     }
 }
