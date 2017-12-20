@@ -4,21 +4,38 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 import javax.swing.*;
+import java.awt.*;
 
 public class MusicServer implements Runnable {
 
+    JTextArea log;
+    
     public void run() {
         buildGUI();
+        go();
     }
 
     ArrayList<ObjectOutputStream> clientOutputStreams;
 
     public void buildGUI(){
         JFrame frame = new JFrame("Music Server");
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBorder(BorderFactory.createTitledBorder("Server log"));
+        // add start, stop buttons or file menu
+        log = new JTextArea(15, 30);
+        log.setBackground(new Color(240, 240, 240));
+        log.setEditable(false);
+        JScrollPane tScroller = new JScrollPane(log);
+        tScroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        tScroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        panel.add(tScroller);
+        
+        frame.getContentPane().add(panel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setBounds(50, 50, 300, 500);
+        frame.pack();
         frame.setVisible(true);
-        go();
     }
     
     public class ClientHandler implements Runnable {
@@ -42,6 +59,7 @@ public class MusicServer implements Runnable {
                 while ((o1 = in.readObject()) != null) {
                     o2 = in.readObject();
                     System.out.println("read two objects");
+                    log.append("read two objects\n");
                     tellEveryone(o1, o2);
                 } // close while
             } catch (Exception ex) {
@@ -61,6 +79,7 @@ public class MusicServer implements Runnable {
                 Thread t = new Thread(new ClientHandler(clientSocket));
                 t.start();
                 System.out.println("got a connection");
+                log.append("got a connection\n");
             }
         } catch (Exception ex) {
             ex.printStackTrace();
