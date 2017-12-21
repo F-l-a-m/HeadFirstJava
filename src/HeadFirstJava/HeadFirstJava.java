@@ -1,11 +1,20 @@
 package HeadFirstJava;
 
+import Chapter_01.*;
+import Chapter_02.*;
+import Chapter_03.*;
+import Chapter_04.*;
+import Chapter_05.*;
+import Chapter_06.*;
+import Chapter_07.*;
+import Chapter_08.*;
 import Chapter_10.*;
 import Chapter_11.*;
 import Chapter_12.*;
 import Chapter_13.*;
 import Chapter_14.*;
 import Chapter_15.*;
+import Chapter_16.*;
 
 public class HeadFirstJava {
 
@@ -50,6 +59,7 @@ public class HeadFirstJava {
         //t.buildGUI();
         //Page_449.launchQuizCardGame();
         //Page_467.codeMagnets();
+       
         /* 15th Chapter */
         /*
         Runnable threadJob = new DailyAdviceServer();
@@ -57,20 +67,23 @@ public class HeadFirstJava {
         serverThread.start();
         System.out.println("Back in main");
         DailyAdviceClient client = new DailyAdviceClient();
-        client.go();
-        */
+        client.go();  */
         /*
         Runnable threadJob = new VerySimpleChatServer();
         Thread serverThread = new Thread(threadJob);
         serverThread.start();
         SimpleChatClient chatClient = new SimpleChatClient();
-        chatClient.go();
-        */
+        chatClient.go(); */
         //Page_524.codeMagnets();
+        /*
         Runnable threadJob = new MusicServer();
         Thread serverThread = new Thread(threadJob);
         serverThread.start();
         BeatBoxFinal beatBox = new BeatBoxFinal();
-        beatBox.startUp("Flam");
+        beatBox.startUp("Flam");*/
+        
+        /* 16 th Chapter */
+        Sorting.compareSongs();
+        
     }
 }
