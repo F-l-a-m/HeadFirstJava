@@ -204,6 +204,7 @@ public class BeatBoxFinal {
             }
             String messageToSend = null;
             try {
+                //remove number? add date-time
                 out.writeObject(userName + nextNum++ + ": " + userMessage.getText());
                 out.writeObject(checkBoxState);
             } catch (Exception ex) {
@@ -232,7 +233,7 @@ public class BeatBoxFinal {
     public class RemoteReader implements Runnable {
 
         boolean[] checkboxState = null;
-        String nameToShow = null;
+        String messageToShow = null;
         Object obj = null;
 
         public void run() {
@@ -240,10 +241,10 @@ public class BeatBoxFinal {
                 while ((obj = in.readObject()) != null) {
                     System.out.println("got an object from the server");
                     System.out.println(obj.getClass());
-                    String nameToShow = (String) obj;
+                    String messageToShow = (String) obj;
                     checkboxState = (boolean[]) in.readObject();
-                    otherSeqsMap.put(nameToShow, checkboxState);
-                    listVector.add(nameToShow);
+                    otherSeqsMap.put(messageToShow, checkboxState);
+                    listVector.add(messageToShow);
                     incomingList.setListData(listVector);
                 }
             } catch (Exception ex) {
