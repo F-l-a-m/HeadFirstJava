@@ -1,4 +1,4 @@
-package Chapter_8;
+package Chapter_08;
 
 public final class Page_234 {
     public static void PoolPuzzle(){

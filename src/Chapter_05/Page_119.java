@@ -1,4 +1,4 @@
-package Chapter_5;
+package Chapter_05;
 
 public final class Page_119 {
 

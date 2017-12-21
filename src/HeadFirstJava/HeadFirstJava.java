@@ -1,13 +1,5 @@
 package HeadFirstJava;
 
-import Chapter_1.*;
-import Chapter_2.*;
-import Chapter_3.*;
-import Chapter_4.*;
-import Chapter_5.*;
-import Chapter_6.*;
-import Chapter_7.*;
-import Chapter_8.*;
 import Chapter_10.*;
 import Chapter_11.*;
 import Chapter_12.*;

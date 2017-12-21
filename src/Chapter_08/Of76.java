@@ -1,4 +1,4 @@
-package Chapter_8;
+package Chapter_08;
 
 public class Of76 extends Clowns {
 
