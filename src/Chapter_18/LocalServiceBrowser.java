@@ -2,17 +2,16 @@ package Chapter_18;
 
 import java.awt.*;
 import javax.swing.*;
-import java.rmi.*;
 import java.awt.event.*;
 
-public class ServiceBrowser {
+public class LocalServiceBrowser {
 
     JPanel mainPanel;
     JComboBox serviceList;
     ServiceServer server;
 
     public void buildGUI() {
-        JFrame frame = new JFrame("RMI Browser");
+        JFrame frame = new JFrame("Local Browser");
 
         mainPanel = new JPanel();
         frame.getContentPane().add(BorderLayout.CENTER, mainPanel);
@@ -28,7 +27,8 @@ public class ServiceBrowser {
 
     void loadService(Object serviceSelection) {
         try {
-            Service svc = server.getService(serviceSelection);
+            ServiceServerImpl srv = new ServiceServerImpl();
+            Service svc = srv.getService(serviceSelection);
             mainPanel.removeAll();
             mainPanel.add(svc.getGuiPanel());
             mainPanel.validate();
@@ -39,20 +39,10 @@ public class ServiceBrowser {
     }
 
     Object[] getServicesList() {
-        Object obj = null;
         Object[] services = null;
-
         try {
-            obj = Naming.lookup("rmi://127.0.0.1/ServiceServer");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        server = (ServiceServer) obj;
-
-        try {
-            services = server.getServiceList();
-
+            ServiceServerImpl srv = new ServiceServerImpl();
+            services = srv.getServiceList();
         } catch (Exception ex) {
             ex.printStackTrace();
         }

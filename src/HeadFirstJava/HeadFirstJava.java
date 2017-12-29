@@ -15,6 +15,8 @@ import Chapter_13.*;
 import Chapter_14.*;
 import Chapter_15.*;
 import Chapter_16.*;
+import Chapter_18.*;
+import java.rmi.*;
 
 public class HeadFirstJava {
 
@@ -85,5 +87,28 @@ public class HeadFirstJava {
         /* 16 th Chapter */
         //Sorting.compareSongs();
         
+        
+        /* 18 th Chapter */
+        
+        /*
+        try {
+            Naming.rebind("ServiceServer", new ServiceServerImpl());
+        } catch (Exception ex){
+            ex.printStackTrace();
+        }
+        System.out.println("Remote service is running");
+        
+        ServiceBrowser sb = new ServiceBrowser();
+        sb.buildGUI();*/
+        
+        // Local
+        LocalServiceBrowser ls = new LocalServiceBrowser();
+        ls.buildGUI();
+        // to do
+        // fix close option
+        // add dice
+        // add music stop button
+        // dayofweek fonts and output format
+        // dice add "num of dices to roll" label
     }
 }
