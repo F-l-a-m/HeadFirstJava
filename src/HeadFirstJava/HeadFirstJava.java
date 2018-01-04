@@ -54,7 +54,11 @@ public class HeadFirstJava {
         //Page_391.start();
         //Page_395.beTheCompiler();
         //Page_396.poolPuzzle();
-        //new BeatBox().buildGUI();
+        
+        // Chapter 13, Beat box
+        //new BeatBoxGUI().buildGUI();
+        
+        // Chapter 14
         //ReadWriteTest.testRead();
         //ReadWriteTest.testWrite();
         //VerySimpleTextEditor t = new VerySimpleTextEditor();
@@ -77,12 +81,20 @@ public class HeadFirstJava {
         SimpleChatClient chatClient = new SimpleChatClient();
         chatClient.go(); */
         //Page_524.codeMagnets();
-        /*
+        
+        // Final Beat box
+        // fix sound !!!
+        
         Runnable threadJob = new MusicServer();
         Thread serverThread = new Thread(threadJob);
         serverThread.start();
+        System.out.println("Launching server, please wait ...");
+        try {
+                Thread.sleep(2000);
+            } catch (InterruptedException ex) { }
+        System.out.println("Server is up");
         BeatBoxFinal beatBox = new BeatBoxFinal();
-        beatBox.startUp("Flam");*/
+        beatBox.startUp("Flam");
         
         /* 16 th Chapter */
         //Sorting.compareSongs();
@@ -102,8 +114,8 @@ public class HeadFirstJava {
         sb.buildGUI();*/
         
         // Local
-        LocalServiceBrowser ls = new LocalServiceBrowser();
-        ls.buildGUI();
+        //LocalServiceBrowser ls = new LocalServiceBrowser();
+        //ls.buildGUI();
         // to do
         // fix close option
         // add dice

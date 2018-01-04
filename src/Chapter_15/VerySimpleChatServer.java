@@ -23,7 +23,9 @@ public class VerySimpleChatServer implements Runnable {
             }
         }
 
+        @Override
         public void run() {
+            
             String message;
             try {
                 while ((message = reader.readLine()) != null) {
@@ -42,7 +44,7 @@ public class VerySimpleChatServer implements Runnable {
 
     public void go() {
         clientOutputStreams = new ArrayList();
-
+        
         try {
             ServerSocket serverSock = new ServerSocket(5000);
             while (true) {
