@@ -1,7 +1,6 @@
 package Chapter_13;
 
 import javax.sound.midi.*;
-import javax.swing.JCheckBox;
 
 public class MidiSound {
     

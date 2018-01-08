@@ -83,8 +83,6 @@ public class HeadFirstJava {
         //Page_524.codeMagnets();
         
         // Final Beat box
-        // fix sound !!!
-        
         Runnable threadJob = new MusicServer();
         Thread serverThread = new Thread(threadJob);
         serverThread.start();

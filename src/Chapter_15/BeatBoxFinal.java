@@ -16,7 +16,7 @@ public class BeatBoxFinal {
     JPanel mainPanel;
     JList incomingList;
     JTextField userMessage;
-    ArrayList<JCheckBox> checkboxList;
+    ArrayList<JCheckBox> cbList;
     int nextNum;
     Vector<String> listVector;
     String userName;
@@ -30,8 +30,6 @@ public class BeatBoxFinal {
         "Maracas", "Whistle", "Low Conga", "Cowbell", "Vibraslap",
         "Low-mid Tom", "High Agogo", "Open Hi Conga"};
 
-    int[] instruments = {35, 42, 46, 38, 49, 39, 50, 60, 70, 72, 64, 56, 58, 47, 67, 63};
-
     public BeatBoxFinal() {
         listVector = new Vector<>();
         otherSeqsMap = new HashMap<>();
@@ -39,8 +37,7 @@ public class BeatBoxFinal {
     }
 
     public void startUp(String name) {
-        userName = name; // Make a menu item to set a nickname later
-        // Make "connect" button later, chat should be greyed out
+        userName = name;
         // Open connection to the server
         try {
             Socket sock = new Socket("127.0.0.1", 4242);
@@ -56,32 +53,61 @@ public class BeatBoxFinal {
 
     public void buildGUI() {
 
+        // add crear button +
+        // group buttons +
+        // fix interface design
+        // make file menu +
+        // Make a menu item to set a nickname later
+        // Make "connect" button later, chat should be greyed out
         theFrame = new JFrame("Cyber beat box");
         BorderLayout layout = new BorderLayout();
         JPanel background = new JPanel(layout);
         background.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        checkboxList = new ArrayList<>();
+        cbList = new ArrayList<>();
 
+        // Menu Bar
+        JMenuBar menuBar = new JMenuBar();
+        JMenu fileMenu = new JMenu("File");
+        JMenuItem newMenuItem = new JMenuItem("New");
+        newMenuItem.addActionListener(new ClearListener());
+        JMenuItem openMenuItem = new JMenuItem("Open");
+        openMenuItem.addActionListener(new OpenListener());
+        JMenuItem saveMenuItem = new JMenuItem("Save");
+        saveMenuItem.addActionListener(new SaveListener());
+        JMenuItem exitMenuItem = new JMenuItem("Exit");
+        exitMenuItem.addActionListener(new ExitListener());
+        fileMenu.add(newMenuItem);
+        fileMenu.add(saveMenuItem);
+        fileMenu.add(openMenuItem);
+        fileMenu.add(exitMenuItem);
+        menuBar.add(fileMenu);
+        
         Box buttonBox = new Box(BoxLayout.Y_AXIS);
+        buttonBox.setBorder(BorderFactory.createTitledBorder("Controls"));
+        
         JButton start = new JButton("Start");
-        start.addActionListener(new MyStartListener());
+        start.addActionListener(new StartListener());
         buttonBox.add(start);
 
         JButton stop = new JButton("Stop");
-        stop.addActionListener(new MyStopListener());
+        stop.addActionListener(new StopListener());
         buttonBox.add(stop);
+        
+        JButton clear = new JButton("Clear");
+        clear.addActionListener(new ClearListener());
+        buttonBox.add(clear);
 
         JButton upTempo = new JButton("Tempo Up");
-        upTempo.addActionListener(new MyUpTempoListener());
+        upTempo.addActionListener(new TempoUpListener());
         buttonBox.add(upTempo);
 
         JButton downTempo = new JButton("Tempo Down");
-        downTempo.addActionListener(new MyDownTempoListener());
+        downTempo.addActionListener(new TempoDownListener());
         buttonBox.add(downTempo);
 
         JButton sendIt = new JButton("Send It");
-        sendIt.addActionListener(new MySendListener());
+        sendIt.addActionListener(new SendListener());
         buttonBox.add(sendIt);
 
         userMessage = new JTextField();
@@ -112,10 +138,11 @@ public class BeatBoxFinal {
         for (int i = 0; i < 256; i++) {
             JCheckBox c = new JCheckBox();
             c.setSelected(false);
-            checkboxList.add(c);
+            cbList.add(c);
             mainPanel.add(c);
         }
 
+        theFrame.setJMenuBar(menuBar);
         theFrame.setBounds(50, 50, 300, 300);
         theFrame.pack();
         theFrame.setVisible(true);
@@ -123,15 +150,15 @@ public class BeatBoxFinal {
     
     boolean[] checkBoxesToBoolean(){
         boolean[] checkBoxes = new boolean[256];
-            for(int i = 0; i < checkboxList.size(); i++){
-                if(checkboxList.get(i).isSelected()){
+            for(int i = 0; i < cbList.size(); i++){
+                if(cbList.get(i).isSelected()){
                     checkBoxes[i] = true;
                 }
             }
         return checkBoxes;
     }
 
-    public class MyStartListener implements ActionListener {
+    public class StartListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent a) {
@@ -139,15 +166,92 @@ public class BeatBoxFinal {
         }
     }
 
-    public class MyStopListener implements ActionListener {
+    public class StopListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent a) {
             midiSound.sequencer.stop();
         }
     }
+    
+    public class ClearListener implements ActionListener {
 
-    public class MyUpTempoListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent ev) {
+            for(JCheckBox cb : cbList){
+                cb.setSelected(false);
+            }
+            midiSound.sequencer.stop();
+        }
+    }
+    
+    public class OpenListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent ev) {
+            JFileChooser fileOpen = new JFileChooser();
+            fileOpen.showOpenDialog(theFrame);
+            File selectedFile = fileOpen.getSelectedFile();
+            if (selectedFile != null) {
+                boolean[] checkboxState = null;
+                try {
+                    FileInputStream fs = new FileInputStream(selectedFile);
+                    ObjectInputStream os = new ObjectInputStream(fs);
+                    checkboxState = (boolean[]) os.readObject();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                JCheckBox cb;
+                for (int i = 0; i < 256; i++) {
+                    cb = (JCheckBox) cbList.get(i);
+                    if (checkboxState[i]) {
+                        cb.setSelected(true);
+                    } else {
+                        cb.setSelected(false);
+                    }
+                }
+                midiSound.sequencer.stop();
+                midiSound.buildTrackAndStart(checkBoxesToBoolean());
+            }
+        }
+    }
+    
+    public class SaveListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent ev) {
+            JFileChooser fileSave = new JFileChooser();
+            fileSave.showSaveDialog(theFrame);
+            File selectedFile = fileSave.getSelectedFile();
+            if (selectedFile != null) {
+                boolean[] checkboxState = new boolean[256];
+                JCheckBox cb;
+                for (int i = 0; i < 256; i++) {
+                    cb = (JCheckBox) cbList.get(i);
+                    if (cb.isSelected()) {
+                        checkboxState[i] = true;
+                    }
+                }
+                try {
+                    FileOutputStream fs = new FileOutputStream(selectedFile);
+                    ObjectOutputStream os = new ObjectOutputStream(fs);
+                    os.writeObject(checkboxState);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
+    
+    public class ExitListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent a) {
+            System.exit(0);
+        }
+    }
+
+    public class TempoUpListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent a) {
@@ -156,7 +260,7 @@ public class BeatBoxFinal {
         }
     }
 
-    public class MyDownTempoListener implements ActionListener {
+    public class TempoDownListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent a) {
@@ -165,14 +269,14 @@ public class BeatBoxFinal {
         }
     }
 
-    public class MySendListener implements ActionListener {
+    public class SendListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent ev) {
             // make an arraylist of just the STATE of the checkboxes
             boolean[] checkBoxState = new boolean[256];
             for (int i = 0; i < 256; i++) {
-                JCheckBox check = (JCheckBox) checkboxList.get(i);
+                JCheckBox check = (JCheckBox) cbList.get(i);
                 if (check.isSelected()) {
                     checkBoxState[i] = true;
                 }
@@ -230,7 +334,7 @@ public class BeatBoxFinal {
         }
     }
 
-    public class MyPlayMineListener implements ActionListener {
+    public class PlayListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent ev) {
@@ -242,7 +346,7 @@ public class BeatBoxFinal {
 
     public void changeSequence(boolean[] checkboxState) {
         for (int i = 0; i < 256; i++) {
-            JCheckBox check = (JCheckBox) checkboxList.get(i);
+            JCheckBox check = (JCheckBox) cbList.get(i);
             if (checkboxState[i]) {
                 check.setSelected(true);
             } else {
