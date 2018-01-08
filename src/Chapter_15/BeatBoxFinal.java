@@ -13,7 +13,7 @@ import javax.swing.event.*;
 public class BeatBoxFinal {
 
     JFrame theFrame;
-    JPanel mainPanel;
+    JPanel cbPanel;
     JList incomingList;
     JTextField userMessage;
     ArrayList<JCheckBox> cbList;
@@ -55,7 +55,7 @@ public class BeatBoxFinal {
 
         // add crear button +
         // group buttons +
-        // fix interface design
+        // fix interface design +
         // make file menu +
         // Make a menu item to set a nickname later
         // Make "connect" button later, chat should be greyed out
@@ -63,10 +63,9 @@ public class BeatBoxFinal {
         BorderLayout layout = new BorderLayout();
         JPanel background = new JPanel(layout);
         background.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-        cbList = new ArrayList<>();
-
-        // Menu Bar
+        theFrame.getContentPane().add(background);
+        
+        // MENU BAR
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
         JMenuItem newMenuItem = new JMenuItem("New");
@@ -83,78 +82,112 @@ public class BeatBoxFinal {
         fileMenu.add(exitMenuItem);
         menuBar.add(fileMenu);
         
-        Box buttonBox = new Box(BoxLayout.Y_AXIS);
-        buttonBox.setBorder(BorderFactory.createTitledBorder("Controls"));
-        
-        JButton start = new JButton("Start");
-        start.addActionListener(new StartListener());
-        buttonBox.add(start);
-
-        JButton stop = new JButton("Stop");
-        stop.addActionListener(new StopListener());
-        buttonBox.add(stop);
-        
-        JButton clear = new JButton("Clear");
-        clear.addActionListener(new ClearListener());
-        buttonBox.add(clear);
-
-        JButton upTempo = new JButton("Tempo Up");
-        upTempo.addActionListener(new TempoUpListener());
-        buttonBox.add(upTempo);
-
-        JButton downTempo = new JButton("Tempo Down");
-        downTempo.addActionListener(new TempoDownListener());
-        buttonBox.add(downTempo);
-
-        JButton sendIt = new JButton("Send It");
-        sendIt.addActionListener(new SendListener());
-        buttonBox.add(sendIt);
-
-        userMessage = new JTextField();
-        buttonBox.add(userMessage);
-
-        incomingList = new JList();
-        incomingList.addListSelectionListener(new MyListSelectionListener());
-        incomingList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        JScrollPane theList = new JScrollPane(incomingList);
-        buttonBox.add(theList);
-        incomingList.setListData(listVector); // no data to start with
-
+        // LEFT SIDE
+        JPanel leftPanel = new JPanel();
+        leftPanel.setBorder(BorderFactory.createTitledBorder("Beats"));
         Box nameBox = new Box(BoxLayout.Y_AXIS);
         for (int i = 0; i < 16; i++) {
             nameBox.add(new Label(instrumentNames[i]));
         }
-
-        background.add(BorderLayout.EAST, buttonBox);
-        background.add(BorderLayout.WEST, nameBox);
-
-        theFrame.getContentPane().add(background);
+        //background.add(BorderLayout.WEST, nameBox);
+        leftPanel.add(BorderLayout.WEST, nameBox);
+        
         GridLayout grid = new GridLayout(16, 16);
         grid.setVgap(1);
         grid.setHgap(1);
-        mainPanel = new JPanel(grid);
-        background.add(BorderLayout.CENTER, mainPanel);
-
+        cbPanel = new JPanel(grid);
+        leftPanel.add(BorderLayout.EAST, cbPanel);
+        cbList = new ArrayList<>();
         for (int i = 0; i < 256; i++) {
             JCheckBox c = new JCheckBox();
             c.setSelected(false);
             cbList.add(c);
-            mainPanel.add(c);
+            cbPanel.add(c);
         }
+        background.add(BorderLayout.WEST, leftPanel);
+        
+        // RIGHT SIDE
+        JPanel buttonsPanel = new JPanel();
+        buttonsPanel.setLayout(new GridBagLayout());
+        buttonsPanel.setBorder(BorderFactory.createTitledBorder("Controls"));
+        GridBagConstraints gbc = new GridBagConstraints();
 
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 0.5;
+        gbc.insets = new Insets(2, 2, 2, 2);
+
+        JButton start = new JButton("Start");
+        start.addActionListener(new StartListener());
+        gbc.anchor = GridBagConstraints.PAGE_START;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        buttonsPanel.add(start, gbc);
+
+        JButton stop = new JButton("Stop");
+        stop.addActionListener(new StopListener());
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        buttonsPanel.add(stop, gbc);
+
+        JButton clear = new JButton("Clear");
+        clear.addActionListener(new ClearListener());
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        buttonsPanel.add(clear, gbc);
+
+        JButton upTempo = new JButton("Tempo Up");
+        upTempo.addActionListener(new TempoUpListener());
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        buttonsPanel.add(upTempo, gbc);
+
+        JButton downTempo = new JButton("Tempo Down");
+        downTempo.addActionListener(new TempoDownListener());
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        buttonsPanel.add(downTempo, gbc);
+
+        userMessage = new JTextField();
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 3;
+        buttonsPanel.add(userMessage, gbc);
+
+        JButton sendIt = new JButton("Send It");
+        sendIt.addActionListener(new SendListener());
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 3;
+        buttonsPanel.add(sendIt, gbc);
+
+        incomingList = new JList();
+        incomingList.addListSelectionListener(new MyListSelectionListener());
+        incomingList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        incomingList.setListData(listVector); // no data to start with
+        JScrollPane theList = new JScrollPane(incomingList);
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weighty = 1.0;   //request any extra vertical space
+        gbc.anchor = GridBagConstraints.PAGE_END; //bottom of space
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        buttonsPanel.add(theList, gbc);
+
+        // FINISH
+        background.add(BorderLayout.EAST, buttonsPanel);
+        theFrame.setResizable(false);
         theFrame.setJMenuBar(menuBar);
         theFrame.setBounds(50, 50, 300, 300);
         theFrame.pack();
         theFrame.setVisible(true);
     }
-    
-    boolean[] checkBoxesToBoolean(){
+
+    boolean[] checkBoxesToBoolean() {
         boolean[] checkBoxes = new boolean[256];
-            for(int i = 0; i < cbList.size(); i++){
-                if(cbList.get(i).isSelected()){
-                    checkBoxes[i] = true;
-                }
+        for (int i = 0; i < cbList.size(); i++) {
+            if (cbList.get(i).isSelected()) {
+                checkBoxes[i] = true;
             }
+        }
         return checkBoxes;
     }
 
@@ -173,18 +206,18 @@ public class BeatBoxFinal {
             midiSound.sequencer.stop();
         }
     }
-    
+
     public class ClearListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent ev) {
-            for(JCheckBox cb : cbList){
+            for (JCheckBox cb : cbList) {
                 cb.setSelected(false);
             }
             midiSound.sequencer.stop();
         }
     }
-    
+
     public class OpenListener implements ActionListener {
 
         @Override
@@ -215,7 +248,7 @@ public class BeatBoxFinal {
             }
         }
     }
-    
+
     public class SaveListener implements ActionListener {
 
         @Override
@@ -242,7 +275,7 @@ public class BeatBoxFinal {
             }
         }
     }
-    
+
     public class ExitListener implements ActionListener {
 
         @Override
