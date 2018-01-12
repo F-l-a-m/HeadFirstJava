@@ -9,6 +9,8 @@ import java.util.*;
 import java.awt.event.*;
 import java.net.*;
 import javax.swing.event.*;
+import java.time.format.*;
+import java.time.*;
 
 public class BeatBoxFinal {
 
@@ -17,13 +19,12 @@ public class BeatBoxFinal {
     JList incomingList;
     JTextField userMessage;
     ArrayList<JCheckBox> cbList;
-    int nextNum;
     Vector<String> listVector;
-    String userName;
     ObjectOutputStream out;
     ObjectInputStream in;
     HashMap<String, boolean[]> otherSeqsMap;
     MidiSound midiSound;
+    String nickname;
 
     String[] instrumentNames = {"Bass Drum", "Closed Hi-Hat", "Open Hi-Hat",
         "Acoustic Snare", "Crash Cymbal", "Hand Clap", "High Tom", "Hi Bongo",
@@ -34,10 +35,10 @@ public class BeatBoxFinal {
         listVector = new Vector<>();
         otherSeqsMap = new HashMap<>();
         midiSound = new MidiSound();
+        nickname = "";
     }
 
-    public void startUp(String name) {
-        userName = name;
+    public void startUp() {
         // Open connection to the server
         try {
             Socket sock = new Socket("127.0.0.1", 4242);
@@ -57,8 +58,11 @@ public class BeatBoxFinal {
         // group buttons +
         // fix interface design +
         // make file menu +
-        // Make a menu item to set a nickname later
+        // Labels +
+        // Make a menu item to set a nickname later +
         // Make "connect" button later, chat should be greyed out
+        // List select on double click
+        // Make file menu on top
         theFrame = new JFrame("Cyber beat box");
         BorderLayout layout = new BorderLayout();
         JPanel background = new JPanel(layout);
@@ -67,6 +71,7 @@ public class BeatBoxFinal {
         
         // MENU BAR
         JMenuBar menuBar = new JMenuBar();
+        
         JMenu fileMenu = new JMenu("File");
         JMenuItem newMenuItem = new JMenuItem("New");
         newMenuItem.addActionListener(new ClearListener());
@@ -76,11 +81,19 @@ public class BeatBoxFinal {
         saveMenuItem.addActionListener(new SaveListener());
         JMenuItem exitMenuItem = new JMenuItem("Exit");
         exitMenuItem.addActionListener(new ExitListener());
+        
+        JMenu editMenu = new JMenu("Edit");
+        JMenuItem nickMenuItem = new JMenuItem("Nickname");
+        nickMenuItem.addActionListener(new NicknameListener());
+        
         fileMenu.add(newMenuItem);
         fileMenu.add(saveMenuItem);
         fileMenu.add(openMenuItem);
         fileMenu.add(exitMenuItem);
         menuBar.add(fileMenu);
+        
+        editMenu.add(nickMenuItem);
+        menuBar.add(editMenu);
         
         // LEFT SIDE
         JPanel leftPanel = new JPanel();
@@ -147,19 +160,33 @@ public class BeatBoxFinal {
         gbc.gridy = 1;
         buttonsPanel.add(downTempo, gbc);
 
-        userMessage = new JTextField();
+        JLabel lblYourMessage = new JLabel("Your message:");
+        lblYourMessage.setForeground(Color.GRAY);
         gbc.gridx = 0;
         gbc.gridy = 2;
+        gbc.gridwidth = 3;
+        buttonsPanel.add(lblYourMessage, gbc);
+        
+        userMessage = new JTextField();
+        gbc.gridx = 0;
+        gbc.gridy = 3;
         gbc.gridwidth = 3;
         buttonsPanel.add(userMessage, gbc);
 
         JButton sendIt = new JButton("Send It");
         sendIt.addActionListener(new SendListener());
         gbc.gridx = 0;
-        gbc.gridy = 3;
+        gbc.gridy = 4;
         gbc.gridwidth = 3;
         buttonsPanel.add(sendIt, gbc);
 
+        JLabel lblChat = new JLabel("Chat:");
+        lblChat.setForeground(Color.GRAY);
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        gbc.gridwidth = 3;
+        buttonsPanel.add(lblChat, gbc);
+        
         incomingList = new JList();
         incomingList.addListSelectionListener(new MyListSelectionListener());
         incomingList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -169,7 +196,7 @@ public class BeatBoxFinal {
         gbc.weighty = 1.0;   //request any extra vertical space
         gbc.anchor = GridBagConstraints.PAGE_END; //bottom of space
         gbc.gridx = 0;
-        gbc.gridy = 4;
+        gbc.gridy = 6;
         buttonsPanel.add(theList, gbc);
 
         // FINISH
@@ -283,6 +310,25 @@ public class BeatBoxFinal {
             System.exit(0);
         }
     }
+    
+    public class NicknameListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent ev) {
+            //open new dialog box to enter nickname
+            //Object[] possibilities = {"ham", "spam", "yam"};
+            String returnMessage = (String) JOptionPane.showInputDialog(
+                    theFrame,
+                    "Enter your nickname",
+                    "title",
+                    JOptionPane.INFORMATION_MESSAGE);
+            
+            //If a string was returned, say so.
+            if ((returnMessage != null) && (returnMessage.length() > 0)) {
+                nickname = returnMessage;
+            }
+        }
+    }
 
     public class TempoUpListener implements ActionListener {
 
@@ -306,18 +352,16 @@ public class BeatBoxFinal {
 
         @Override
         public void actionPerformed(ActionEvent ev) {
-            // make an arraylist of just the STATE of the checkboxes
-            boolean[] checkBoxState = new boolean[256];
-            for (int i = 0; i < 256; i++) {
-                JCheckBox check = (JCheckBox) cbList.get(i);
-                if (check.isSelected()) {
-                    checkBoxState[i] = true;
-                }
-            }
-            String messageToSend = null;
+            boolean[] checkBoxState = checkBoxesToBoolean();
             try {
-                //remove number? add date-time
-                out.writeObject(userName + nextNum++ + ": " + userMessage.getText());
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+                LocalDateTime now = LocalDateTime.now();
+                out.writeObject(
+                        dtf.format(now)
+                        + " "
+                        + nickname
+                        + ": "
+                        + userMessage.getText());
                 out.writeObject(checkBoxState);
             } catch (IOException ex) {
                 System.out.println("Sorry dude. Could not send it to the server.");

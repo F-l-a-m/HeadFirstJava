@@ -92,7 +92,7 @@ public class HeadFirstJava {
             } catch (InterruptedException ex) { }
         System.out.println("Server is up");
         BeatBoxFinal beatBox = new BeatBoxFinal();
-        beatBox.startUp("Flam");
+        beatBox.startUp();
         
         /* 16 th Chapter */
         //Sorting.compareSongs();
