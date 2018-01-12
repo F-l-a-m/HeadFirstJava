@@ -81,18 +81,19 @@ public class BeatBoxFinal {
         saveMenuItem.addActionListener(new SaveListener());
         JMenuItem exitMenuItem = new JMenuItem("Exit");
         exitMenuItem.addActionListener(new ExitListener());
-        
-        JMenu editMenu = new JMenu("Edit");
-        JMenuItem nickMenuItem = new JMenuItem("Nickname");
-        nickMenuItem.addActionListener(new NicknameListener());
-        
         fileMenu.add(newMenuItem);
         fileMenu.add(saveMenuItem);
         fileMenu.add(openMenuItem);
         fileMenu.add(exitMenuItem);
         menuBar.add(fileMenu);
         
+        JMenu editMenu = new JMenu("Edit");
+        JMenuItem nickMenuItem = new JMenuItem("Nickname");
+        nickMenuItem.addActionListener(new NicknameListener());
+        JMenuItem connectMenuItem = new JMenuItem("Connect");
+        connectMenuItem.addActionListener(new ConnectListener());
         editMenu.add(nickMenuItem);
+        editMenu.add(connectMenuItem);
         menuBar.add(editMenu);
         
         // LEFT SIDE
@@ -327,6 +328,46 @@ public class BeatBoxFinal {
             if ((returnMessage != null) && (returnMessage.length() > 0)) {
                 nickname = returnMessage;
             }
+        }
+    }
+    
+    public class ConnectListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent ev) {
+            // Open new dialog box to enter server IP
+            // Make formatted enter from 4 text boxes
+            /*
+            String serverIP = (String) JOptionPane.showInputDialog(
+                    theFrame,
+                    "Enter server IP",
+                    "Connect to server",
+                    JOptionPane.INFORMATION_MESSAGE);
+            
+            if ((serverIP != null) && (serverIP.length() > 0)) {
+            //
+            }*/
+            JTextField one = new JTextField();
+            one.setSize(10, 10);
+            JTextField two = new JTextField();
+            two.setSize(10,10);
+            JTextField three = new JTextField();
+            JTextField four = new JTextField();
+
+            final JComponent[] inputs = new JComponent[]{
+                one, two, three, four
+            };
+            int result = JOptionPane.showConfirmDialog(null, inputs, "My custom dialog", JOptionPane.PLAIN_MESSAGE);
+            if (result == JOptionPane.OK_OPTION) {
+                System.out.println("You entered "
+                        + one.getText() + "."
+                        + two.getText() + "."
+                        + three.getText() + "."
+                        + four.getText());
+            } else {
+                System.out.println("User canceled / closed the dialog, result = " + result);
+            }
+
         }
     }
 
