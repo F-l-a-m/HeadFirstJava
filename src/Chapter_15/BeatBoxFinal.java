@@ -53,6 +53,7 @@ public class BeatBoxFinal {
     }
 
     public void buildGUI() {
+        // Request nick set to connect
         // Make "connect" button later, chat should be greyed out
         // List select on double click
         // Make file menu on top
@@ -197,7 +198,7 @@ public class BeatBoxFinal {
         // FINISH
         theFrame.setJMenuBar(menuBar);
         theFrame.setResizable(false);
-        //theFrame.setBounds(50, 50, 300, 300);
+        theFrame.setBounds(50, 50, 300, 300);
         theFrame.pack();
         theFrame.setVisible(true);
     }
@@ -328,35 +329,42 @@ public class BeatBoxFinal {
 
         @Override
         public void actionPerformed(ActionEvent ev) {
-            // Open new dialog box to enter server IP
-            // Make formatted enter from 4 text boxes
-            /*
-            String serverIP = (String) JOptionPane.showInputDialog(
-                    theFrame,
-                    "Enter server IP",
-                    "Connect to server",
-                    JOptionPane.INFORMATION_MESSAGE);
+            JPanel dialogPanel = new JPanel(new FlowLayout());
+            JComponent[] inputs = new JComponent[5];
+            for(int i = 0; i < 5; i++){
+                inputs[i] = new JTextField(3);
+                dialogPanel.add(inputs[i]);
+                if(i < 3){
+                    dialogPanel.add(new JLabel("."));
+                }
+                if(i == 3){
+                    dialogPanel.add(new JLabel(":"));
+                }
+            }
             
-            if ((serverIP != null) && (serverIP.length() > 0)) {
-            //
-            }*/
-            JTextField one = new JTextField();
-            one.setSize(10, 10);
-            JTextField two = new JTextField();
-            two.setSize(10,10);
-            JTextField three = new JTextField();
-            JTextField four = new JTextField();
-
-            final JComponent[] inputs = new JComponent[]{
-                one, two, three, four
-            };
-            int result = JOptionPane.showConfirmDialog(null, inputs, "My custom dialog", JOptionPane.PLAIN_MESSAGE);
+            int result = JOptionPane.showConfirmDialog(
+                    null, 
+                    dialogPanel, 
+                    "Connect to server", 
+                    JOptionPane.PLAIN_MESSAGE
+            );
+            
             if (result == JOptionPane.OK_OPTION) {
-                System.out.println("You entered "
-                        + one.getText() + "."
-                        + two.getText() + "."
-                        + three.getText() + "."
-                        + four.getText());
+                String ipAddress = "User entered ";
+                for(int i = 0; i < 5; i++){
+                    JTextField t = new JTextField();
+                    t = (JTextField)inputs[i];
+                    ipAddress += t.getText();
+                    if(i < 3){
+                        ipAddress += ".";
+                    }
+                    if(i == 3){
+                        ipAddress +=":";
+                    }
+                }
+                System.out.println(ipAddress);
+                // validate input here
+                // connect here
             } else {
                 System.out.println("User canceled / closed the dialog, result = " + result);
             }
