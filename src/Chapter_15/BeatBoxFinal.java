@@ -15,10 +15,10 @@ import java.time.*;
 public class BeatBoxFinal {
 
     JFrame theFrame;
-    JPanel cbPanel;
+    JPanel checkBoxPanel;
     JList incomingList;
     JTextField userMessage;
-    ArrayList<JCheckBox> cbList;
+    ArrayList<JCheckBox> checkBoxList;
     Vector<String> listVector;
     ObjectOutputStream out;
     ObjectInputStream in;
@@ -53,19 +53,11 @@ public class BeatBoxFinal {
     }
 
     public void buildGUI() {
-
-        // add crear button +
-        // group buttons +
-        // fix interface design +
-        // make file menu +
-        // Labels +
-        // Make a menu item to set a nickname later +
         // Make "connect" button later, chat should be greyed out
         // List select on double click
         // Make file menu on top
         theFrame = new JFrame("Cyber beat box");
-        BorderLayout layout = new BorderLayout();
-        JPanel background = new JPanel(layout);
+        JPanel background = new JPanel(new BorderLayout());
         background.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         theFrame.getContentPane().add(background);
         
@@ -97,33 +89,34 @@ public class BeatBoxFinal {
         menuBar.add(editMenu);
         
         // LEFT SIDE
-        JPanel leftPanel = new JPanel();
-        leftPanel.setBorder(BorderFactory.createTitledBorder("Beats"));
-        Box nameBox = new Box(BoxLayout.Y_AXIS);
+        JPanel westPanel = new JPanel();
+        westPanel.setBorder(BorderFactory.createTitledBorder("Beats"));
+        
+        Box instrumentsNameBox = new Box(BoxLayout.Y_AXIS);
         for (int i = 0; i < 16; i++) {
-            nameBox.add(new Label(instrumentNames[i]));
+            instrumentsNameBox.add(new Label(instrumentNames[i]));
         }
-        //background.add(BorderLayout.WEST, nameBox);
-        leftPanel.add(BorderLayout.WEST, nameBox);
         
         GridLayout grid = new GridLayout(16, 16);
         grid.setVgap(1);
         grid.setHgap(1);
-        cbPanel = new JPanel(grid);
-        leftPanel.add(BorderLayout.EAST, cbPanel);
-        cbList = new ArrayList<>();
+        checkBoxPanel = new JPanel(grid);
+        checkBoxList = new ArrayList<>();
         for (int i = 0; i < 256; i++) {
-            JCheckBox c = new JCheckBox();
-            c.setSelected(false);
-            cbList.add(c);
-            cbPanel.add(c);
+            JCheckBox cb = new JCheckBox();
+            cb.setSelected(false);
+            checkBoxList.add(cb);
+            checkBoxPanel.add(cb);
         }
-        background.add(BorderLayout.WEST, leftPanel);
+        
+        westPanel.add(BorderLayout.WEST, instrumentsNameBox);
+        westPanel.add(BorderLayout.EAST, checkBoxPanel);
+        background.add(BorderLayout.WEST, westPanel);
         
         // RIGHT SIDE
-        JPanel buttonsPanel = new JPanel();
-        buttonsPanel.setLayout(new GridBagLayout());
-        buttonsPanel.setBorder(BorderFactory.createTitledBorder("Controls"));
+        JPanel eastPanel = new JPanel();
+        eastPanel.setLayout(new GridBagLayout());
+        eastPanel.setBorder(BorderFactory.createTitledBorder("Controls"));
         GridBagConstraints gbc = new GridBagConstraints();
 
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -135,58 +128,58 @@ public class BeatBoxFinal {
         gbc.anchor = GridBagConstraints.PAGE_START;
         gbc.gridx = 0;
         gbc.gridy = 0;
-        buttonsPanel.add(start, gbc);
+        eastPanel.add(start, gbc);
 
         JButton stop = new JButton("Stop");
         stop.addActionListener(new StopListener());
         gbc.gridx = 1;
         gbc.gridy = 0;
-        buttonsPanel.add(stop, gbc);
+        eastPanel.add(stop, gbc);
 
         JButton clear = new JButton("Clear");
         clear.addActionListener(new ClearListener());
         gbc.gridx = 2;
         gbc.gridy = 0;
-        buttonsPanel.add(clear, gbc);
+        eastPanel.add(clear, gbc);
 
         JButton upTempo = new JButton("Tempo Up");
         upTempo.addActionListener(new TempoUpListener());
         gbc.gridx = 0;
         gbc.gridy = 1;
-        buttonsPanel.add(upTempo, gbc);
+        eastPanel.add(upTempo, gbc);
 
         JButton downTempo = new JButton("Tempo Down");
         downTempo.addActionListener(new TempoDownListener());
         gbc.gridx = 1;
         gbc.gridy = 1;
-        buttonsPanel.add(downTempo, gbc);
+        eastPanel.add(downTempo, gbc);
 
         JLabel lblYourMessage = new JLabel("Your message:");
         lblYourMessage.setForeground(Color.GRAY);
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 3;
-        buttonsPanel.add(lblYourMessage, gbc);
+        eastPanel.add(lblYourMessage, gbc);
         
         userMessage = new JTextField();
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 3;
-        buttonsPanel.add(userMessage, gbc);
+        eastPanel.add(userMessage, gbc);
 
         JButton sendIt = new JButton("Send It");
         sendIt.addActionListener(new SendListener());
         gbc.gridx = 0;
         gbc.gridy = 4;
         gbc.gridwidth = 3;
-        buttonsPanel.add(sendIt, gbc);
+        eastPanel.add(sendIt, gbc);
 
         JLabel lblChat = new JLabel("Chat:");
         lblChat.setForeground(Color.GRAY);
         gbc.gridx = 0;
         gbc.gridy = 5;
         gbc.gridwidth = 3;
-        buttonsPanel.add(lblChat, gbc);
+        eastPanel.add(lblChat, gbc);
         
         incomingList = new JList();
         incomingList.addListSelectionListener(new MyListSelectionListener());
@@ -198,21 +191,21 @@ public class BeatBoxFinal {
         gbc.anchor = GridBagConstraints.PAGE_END; //bottom of space
         gbc.gridx = 0;
         gbc.gridy = 6;
-        buttonsPanel.add(theList, gbc);
-
+        eastPanel.add(theList, gbc);
+        background.add(BorderLayout.EAST, eastPanel);
+        
         // FINISH
-        background.add(BorderLayout.EAST, buttonsPanel);
-        theFrame.setResizable(false);
         theFrame.setJMenuBar(menuBar);
-        theFrame.setBounds(50, 50, 300, 300);
+        theFrame.setResizable(false);
+        //theFrame.setBounds(50, 50, 300, 300);
         theFrame.pack();
         theFrame.setVisible(true);
     }
 
     boolean[] checkBoxesToBoolean() {
         boolean[] checkBoxes = new boolean[256];
-        for (int i = 0; i < cbList.size(); i++) {
-            if (cbList.get(i).isSelected()) {
+        for (int i = 0; i < checkBoxList.size(); i++) {
+            if (checkBoxList.get(i).isSelected()) {
                 checkBoxes[i] = true;
             }
         }
@@ -239,7 +232,7 @@ public class BeatBoxFinal {
 
         @Override
         public void actionPerformed(ActionEvent ev) {
-            for (JCheckBox cb : cbList) {
+            for (JCheckBox cb : checkBoxList) {
                 cb.setSelected(false);
             }
             midiSound.sequencer.stop();
@@ -264,7 +257,7 @@ public class BeatBoxFinal {
                 }
                 JCheckBox cb;
                 for (int i = 0; i < 256; i++) {
-                    cb = (JCheckBox) cbList.get(i);
+                    cb = (JCheckBox) checkBoxList.get(i);
                     if (checkboxState[i]) {
                         cb.setSelected(true);
                     } else {
@@ -288,7 +281,7 @@ public class BeatBoxFinal {
                 boolean[] checkboxState = new boolean[256];
                 JCheckBox cb;
                 for (int i = 0; i < 256; i++) {
-                    cb = (JCheckBox) cbList.get(i);
+                    cb = (JCheckBox) checkBoxList.get(i);
                     if (cb.isSelected()) {
                         checkboxState[i] = true;
                     }
@@ -464,7 +457,7 @@ public class BeatBoxFinal {
 
     public void changeSequence(boolean[] checkboxState) {
         for (int i = 0; i < 256; i++) {
-            JCheckBox check = (JCheckBox) cbList.get(i);
+            JCheckBox check = (JCheckBox) checkBoxList.get(i);
             if (checkboxState[i]) {
                 check.setSelected(true);
             } else {
