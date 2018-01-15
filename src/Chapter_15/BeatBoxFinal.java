@@ -61,10 +61,10 @@ public class BeatBoxFinal {
         JPanel background = new JPanel(new BorderLayout());
         background.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         theFrame.getContentPane().add(background);
-        
+
         // MENU BAR
         JMenuBar menuBar = new JMenuBar();
-        
+
         JMenu fileMenu = new JMenu("File");
         JMenuItem newMenuItem = new JMenuItem("New");
         newMenuItem.addActionListener(new ClearListener());
@@ -79,7 +79,7 @@ public class BeatBoxFinal {
         fileMenu.add(openMenuItem);
         fileMenu.add(exitMenuItem);
         menuBar.add(fileMenu);
-        
+
         JMenu editMenu = new JMenu("Edit");
         JMenuItem nickMenuItem = new JMenuItem("Nickname");
         nickMenuItem.addActionListener(new NicknameListener());
@@ -88,16 +88,16 @@ public class BeatBoxFinal {
         editMenu.add(nickMenuItem);
         editMenu.add(connectMenuItem);
         menuBar.add(editMenu);
-        
+
         // LEFT SIDE
         JPanel westPanel = new JPanel();
         westPanel.setBorder(BorderFactory.createTitledBorder("Beats"));
-        
+
         Box instrumentsNameBox = new Box(BoxLayout.Y_AXIS);
         for (int i = 0; i < 16; i++) {
             instrumentsNameBox.add(new Label(instrumentNames[i]));
         }
-        
+
         GridLayout grid = new GridLayout(16, 16);
         grid.setVgap(1);
         grid.setHgap(1);
@@ -109,11 +109,11 @@ public class BeatBoxFinal {
             checkBoxList.add(cb);
             checkBoxPanel.add(cb);
         }
-        
+
         westPanel.add(BorderLayout.WEST, instrumentsNameBox);
         westPanel.add(BorderLayout.EAST, checkBoxPanel);
         background.add(BorderLayout.WEST, westPanel);
-        
+
         // RIGHT SIDE
         JPanel eastPanel = new JPanel();
         eastPanel.setLayout(new GridBagLayout());
@@ -161,7 +161,7 @@ public class BeatBoxFinal {
         gbc.gridy = 2;
         gbc.gridwidth = 3;
         eastPanel.add(lblYourMessage, gbc);
-        
+
         userMessage = new JTextField();
         gbc.gridx = 0;
         gbc.gridy = 3;
@@ -181,7 +181,7 @@ public class BeatBoxFinal {
         gbc.gridy = 5;
         gbc.gridwidth = 3;
         eastPanel.add(lblChat, gbc);
-        
+
         incomingList = new JList();
         incomingList.addListSelectionListener(new MyListSelectionListener());
         incomingList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -194,7 +194,7 @@ public class BeatBoxFinal {
         gbc.gridy = 6;
         eastPanel.add(theList, gbc);
         background.add(BorderLayout.EAST, eastPanel);
-        
+
         // FINISH
         theFrame.setJMenuBar(menuBar);
         theFrame.setResizable(false);
@@ -305,7 +305,7 @@ public class BeatBoxFinal {
             System.exit(0);
         }
     }
-    
+
     public class NicknameListener implements ActionListener {
 
         @Override
@@ -317,56 +317,88 @@ public class BeatBoxFinal {
                     "Enter your nickname",
                     "title",
                     JOptionPane.INFORMATION_MESSAGE);
-            
+
             //If a string was returned, say so.
             if ((returnMessage != null) && (returnMessage.length() > 0)) {
                 nickname = returnMessage;
             }
         }
     }
-    
+
     public class ConnectListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent ev) {
+            // Draw panel
             JPanel dialogPanel = new JPanel(new FlowLayout());
             JComponent[] inputs = new JComponent[5];
-            for(int i = 0; i < 5; i++){
-                inputs[i] = new JTextField(3);
-                dialogPanel.add(inputs[i]);
-                if(i < 3){
-                    dialogPanel.add(new JLabel("."));
+            JTextField intTextField;
+            try {
+                for (int i = 0; i < 4; i++) {
+                    // IP inputs
+                    intTextField = new JTextField(3);
+                    dialogPanel.add(intTextField);
+                    inputs[i] = intTextField;
+                    if (i != 3) {
+                        dialogPanel.add(new JLabel("."));
+                    }
                 }
-                if(i == 3){
-                    dialogPanel.add(new JLabel(":"));
-                }
+                // Port input
+                dialogPanel.add(new JLabel(":"));
+                intTextField = new JTextField(5);
+                dialogPanel.add(intTextField);
+                inputs[4] = intTextField;
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
-            
+
             int result = JOptionPane.showConfirmDialog(
-                    null, 
-                    dialogPanel, 
-                    "Connect to server", 
+                    null,
+                    dialogPanel,
+                    "Connect to server",
                     JOptionPane.PLAIN_MESSAGE
             );
-            
+
+            // Get results
             if (result == JOptionPane.OK_OPTION) {
-                String ipAddress = "User entered ";
+                
+                String userInput = "User entered ";
                 for(int i = 0; i < 5; i++){
-                    JTextField t = new JTextField();
-                    t = (JTextField)inputs[i];
-                    ipAddress += t.getText();
-                    if(i < 3){
-                        ipAddress += ".";
-                    }
-                    if(i == 3){
-                        ipAddress +=":";
-                    }
+                    JTextField t = (JTextField)inputs[i];
+                    userInput += t.getText();
+                    if(i < 3) userInput += ".";
+                    if(i == 3) userInput +=":";
                 }
-                System.out.println(ipAddress);
-                // validate input here
+                System.out.println(userInput);
+
+                // Validate input
+                int[] userIntArray = new int[5];
+                boolean showWarning = false;
+                try {
+                    for (int i = 0; i < 5; i++) {
+                        JTextField t = (JTextField) inputs[i];
+                        int num = Integer.parseInt(t.getText());
+                        userIntArray[i] = num;
+                        if ((i < 4) && (num < 0 || num > 255)) {
+                            System.out.println("ip: num < 0 || num > 255");
+                            showWarning = true;
+                        } else if ((i == 4) && (num < 1024 || num > 49151)) {
+                            System.out.println("port: num < 1024 || num > 49151");
+                            showWarning = true;
+                        }
+                    }
+                } catch (Exception ex) {
+                    showWarning = true;
+                }
+                if(showWarning){
+                    JOptionPane.showMessageDialog(theFrame, 
+                            "Please enter a valid IP addess");
+                }
+
                 // connect here
             } else {
-                System.out.println("User canceled / closed the dialog, result = " + result);
+                System.out.println("User canceled / closed the dialog, result = "
+                        + result);
             }
 
         }
