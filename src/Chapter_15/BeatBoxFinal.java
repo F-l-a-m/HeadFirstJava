@@ -38,23 +38,10 @@ public class BeatBoxFinal {
         nickname = "";
     }
 
-    public void startUp() {
-        // Open connection to the server
-        try {
-            Socket sock = new Socket("127.0.0.1", 4242);
-            out = new ObjectOutputStream(sock.getOutputStream());
-            in = new ObjectInputStream(sock.getInputStream());
-            Thread remote = new Thread(new RemoteReader());
-            remote.start();
-        } catch (IOException ex) {
-            System.out.println("Couldn’t connect - you’ll have to play alone.");
-        }
-        buildGUI();
-    }
-
     public void buildGUI() {
         // Request nick set to connect
         // Make "connect" button later, chat should be greyed out
+        // Disconnect before connect to new
         // List select on double click
         // Make file menu on top
         theFrame = new JFrame("Cyber beat box");
@@ -362,14 +349,14 @@ public class BeatBoxFinal {
             // Get results
             if (result == JOptionPane.OK_OPTION) {
                 
-                String userInput = "User entered ";
+                String userInput = "";
                 for(int i = 0; i < 5; i++){
                     JTextField t = (JTextField)inputs[i];
                     userInput += t.getText();
                     if(i < 3) userInput += ".";
                     if(i == 3) userInput +=":";
                 }
-                System.out.println(userInput);
+                System.out.println("User entered " + userInput);
 
                 // Validate input
                 int[] userIntArray = new int[5];
@@ -391,14 +378,22 @@ public class BeatBoxFinal {
                     showWarning = true;
                 }
                 if(showWarning){
-                    JOptionPane.showMessageDialog(theFrame, 
-                            "Please enter a valid IP addess");
+                    say("Please enter a valid IP addess");
                 }
 
-                // connect here
+                // Open connection to the server
+                String socket[] = userInput.split(":");
+                try {
+                    Socket sock = new Socket(socket[0], Integer.parseInt(socket[1]));
+                    out = new ObjectOutputStream(sock.getOutputStream());
+                    in = new ObjectInputStream(sock.getInputStream());
+                    Thread remote = new Thread(new RemoteReader());
+                    remote.start();
+                } catch (Exception ex) {
+                    say("Couldn’t connect - you’ll have to play alone.");
+                }
             } else {
-                System.out.println("User canceled / closed the dialog, result = "
-                        + result);
+                System.out.println("User canceled / closed the dialog, result = " + result);
             }
 
         }
@@ -527,6 +522,10 @@ public class BeatBoxFinal {
         } catch (InvalidMidiDataException e) {
         }
         return event;
+    }
+    
+    void say(String message){
+        JOptionPane.showMessageDialog(theFrame, message);
     }
 
 }

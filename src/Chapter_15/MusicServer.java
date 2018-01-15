@@ -10,6 +10,7 @@ public class MusicServer implements Runnable {
 
     JTextArea log;
     
+    @Override
     public void run() {
         buildGUI();
         go();
