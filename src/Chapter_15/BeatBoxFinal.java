@@ -16,8 +16,9 @@ public class BeatBoxFinal {
 
     JFrame theFrame;
     JPanel checkBoxPanel;
-    JList incomingList;
     JTextField userMessage;
+    JButton sendIt;
+    JList incomingList;
     ArrayList<JCheckBox> checkBoxList;
     Vector<String> listVector;
     ObjectOutputStream out;
@@ -39,11 +40,10 @@ public class BeatBoxFinal {
     }
 
     public void buildGUI() {
-        // Request nick set to connect
-        // Make "connect" button later, chat should be greyed out
         // Disconnect before connect to new
         // List select on double click
-        // Make file menu on top
+        // Make file menu on top (check instrument box)
+        // Make default files extension
         theFrame = new JFrame("Cyber beat box");
         JPanel background = new JPanel(new BorderLayout());
         background.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -150,12 +150,14 @@ public class BeatBoxFinal {
         eastPanel.add(lblYourMessage, gbc);
 
         userMessage = new JTextField();
+        userMessage.setEnabled(false);
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 3;
         eastPanel.add(userMessage, gbc);
 
-        JButton sendIt = new JButton("Send It");
+        sendIt = new JButton("Send It");
+        sendIt.setEnabled(false);
         sendIt.addActionListener(new SendListener());
         gbc.gridx = 0;
         gbc.gridy = 4;
@@ -170,6 +172,7 @@ public class BeatBoxFinal {
         eastPanel.add(lblChat, gbc);
 
         incomingList = new JList();
+        incomingList.setEnabled(false);
         incomingList.addListSelectionListener(new MyListSelectionListener());
         incomingList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         incomingList.setListData(listVector); // no data to start with
@@ -316,86 +319,35 @@ public class BeatBoxFinal {
 
         @Override
         public void actionPerformed(ActionEvent ev) {
-            // Draw panel
-            JPanel dialogPanel = new JPanel(new FlowLayout());
-            JComponent[] inputs = new JComponent[5];
-            JTextField intTextField;
-            try {
-                for (int i = 0; i < 4; i++) {
-                    // IP inputs
-                    intTextField = new JTextField(3);
-                    dialogPanel.add(intTextField);
-                    inputs[i] = intTextField;
-                    if (i != 3) {
-                        dialogPanel.add(new JLabel("."));
-                    }
-                }
-                // Port input
-                dialogPanel.add(new JLabel(":"));
-                intTextField = new JTextField(5);
-                dialogPanel.add(intTextField);
-                inputs[4] = intTextField;
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-
-            int result = JOptionPane.showConfirmDialog(
-                    null,
-                    dialogPanel,
-                    "Connect to server",
-                    JOptionPane.PLAIN_MESSAGE
-            );
-
-            // Get results
-            if (result == JOptionPane.OK_OPTION) {
-                
-                String userInput = "";
-                for(int i = 0; i < 5; i++){
-                    JTextField t = (JTextField)inputs[i];
-                    userInput += t.getText();
-                    if(i < 3) userInput += ".";
-                    if(i == 3) userInput +=":";
-                }
-                System.out.println("User entered " + userInput);
-
-                // Validate input
-                int[] userIntArray = new int[5];
-                boolean showWarning = false;
-                try {
-                    for (int i = 0; i < 5; i++) {
-                        JTextField t = (JTextField) inputs[i];
-                        int num = Integer.parseInt(t.getText());
-                        userIntArray[i] = num;
-                        if ((i < 4) && (num < 0 || num > 255)) {
-                            System.out.println("ip: num < 0 || num > 255");
-                            showWarning = true;
-                        } else if ((i == 4) && (num < 1024 || num > 49151)) {
-                            System.out.println("port: num < 1024 || num > 49151");
-                            showWarning = true;
-                        }
-                    }
-                } catch (Exception ex) {
-                    showWarning = true;
-                }
-                if(showWarning){
-                    say("Please enter a valid IP addess");
-                }
-
-                // Open connection to the server
-                String socket[] = userInput.split(":");
-                try {
-                    Socket sock = new Socket(socket[0], Integer.parseInt(socket[1]));
-                    out = new ObjectOutputStream(sock.getOutputStream());
-                    in = new ObjectInputStream(sock.getInputStream());
-                    Thread remote = new Thread(new RemoteReader());
-                    remote.start();
-                } catch (Exception ex) {
-                    say("Couldn’t connect - you’ll have to play alone.");
-                }
+            if (nickname.equals("")) {
+                say("Please enter your nickname");
             } else {
-                System.out.println("User canceled / closed the dialog, result = " + result);
-            }
 
+                String[] userInput = showConnectDialog();
+                if (isIPValid(userInput)) {
+                    // Open connection to the server
+                    String ip
+                            = userInput[0] + "."
+                            + userInput[1] + "."
+                            + userInput[2] + "."
+                            + userInput[3];
+                    try {
+                        System.out.println("Trying to connect to " + ip + ":" + userInput[4]);
+                        Socket sock = new Socket(ip, Integer.parseInt(userInput[4]));
+                        out = new ObjectOutputStream(sock.getOutputStream());
+                        in = new ObjectInputStream(sock.getInputStream());
+                        Thread remote = new Thread(new RemoteReader());
+                        remote.start();
+                        sendIt.setEnabled(true);
+                        userMessage.setEnabled(true);
+                        incomingList.setEnabled(true);
+                    } catch (NumberFormatException | IOException ex) {
+                        say("Couldn’t connect - you’ll have to play alone.");
+                    }
+                } else {
+                    say("Please enter a valid IP address.");
+                }
+            }
         }
     }
 
@@ -466,7 +418,7 @@ public class BeatBoxFinal {
         public void run() {
             try {
                 while ((obj = in.readObject()) != null) {
-                    System.out.println("got an object from the server");
+                    System.out.println("Got an object from the server");
                     System.out.println(obj.getClass());
                     messageToShow = (String) obj;
                     checkboxState = (boolean[]) in.readObject();
@@ -501,31 +453,75 @@ public class BeatBoxFinal {
         }
     }
 
-    public void makeTracks(ArrayList list) {
-        Iterator it = list.iterator();
-        for (int i = 0; i < 16; i++) {
-            Integer num = (Integer) it.next();
-            if (num != null) {
-                int numKey = num;
-                midiSound.track.add(makeEvent(144, 9, numKey, 100, i));
-                midiSound.track.add(makeEvent(128, 9, numKey, 100, i + 1));
-            }
-        }
-    }
-
-    public MidiEvent makeEvent(int comd, int chan, int one, int two, int tick) {
-        MidiEvent event = null;
-        try {
-            ShortMessage a = new ShortMessage();
-            a.setMessage(comd, chan, one, two);
-            event = new MidiEvent(a, tick);
-        } catch (InvalidMidiDataException e) {
-        }
-        return event;
-    }
-    
-    void say(String message){
+    private void say(String message) {
         JOptionPane.showMessageDialog(theFrame, message);
     }
 
+    private String[] showConnectDialog() {
+        // Draw panel
+        JPanel dialogPanel = new JPanel(new FlowLayout());
+        JTextField[] inputs = new JTextField[5];
+        JTextField intTextField;
+        try {
+            for (int i = 0; i < 4; i++) {
+                // IP inputs
+                intTextField = new JTextField(3);
+                dialogPanel.add(intTextField);
+                inputs[i] = intTextField;
+                if (i != 3) {
+                    dialogPanel.add(new JLabel("."));
+                }
+            }
+            // Port input
+            dialogPanel.add(new JLabel(":"));
+            intTextField = new JTextField(5);
+            dialogPanel.add(intTextField);
+            inputs[4] = intTextField;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        int result = JOptionPane.showConfirmDialog(
+                null,
+                dialogPanel,
+                "Connect to server",
+                JOptionPane.PLAIN_MESSAGE
+        );
+
+        // Get results
+        String[] userInput = {
+            inputs[0].getText(),
+            inputs[1].getText(),
+            inputs[2].getText(),
+            inputs[3].getText(),
+            inputs[4].getText(),};
+        if (result == JOptionPane.OK_OPTION) {
+            return userInput;
+        } else {
+            System.out.println("User canceled / closed the dialog");
+            return null;
+        }
+    }
+
+    private boolean isIPValid(String[] userInput) {
+        if (userInput == null) {
+            return false;
+        } else {
+            try {
+                for (int i = 0; i < 5; i++) {
+                    int num = Integer.parseInt(userInput[i]);
+                    if ((i < 4) && (num < 0 || num > 255)) {
+                        System.out.println("ip: num < 0 || num > 255");
+                        return false;
+                    } else if ((i == 4) && (num < 1024 || num > 49151)) {
+                        System.out.println("port: num < 1024 || num > 49151");
+                        return false;
+                    }
+                }
+                return true;
+            } catch (Exception ex) {
+                return false;
+            }
+        }
+    }
 }
