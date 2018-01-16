@@ -4,7 +4,6 @@ import Chapter_13.MidiSound;
 import java.awt.*;
 import javax.swing.*;
 import java.io.*;
-import javax.sound.midi.*;
 import java.util.*;
 import java.awt.event.*;
 import java.net.*;
@@ -36,18 +35,18 @@ public class BeatBoxFinal {
         listVector = new Vector<>();
         otherSeqsMap = new HashMap<>();
         midiSound = new MidiSound();
+        checkBoxList = new ArrayList<>();
         nickname = "";
     }
 
     public void buildGUI() {
+        // MenuBar is on top (check instrument box ?) -
         // Disconnect before connect to new
         // List select on double click
-        // Make file menu on top (check instrument box)
         // Make default files extension
         theFrame = new JFrame("Cyber beat box");
         JPanel background = new JPanel(new BorderLayout());
         background.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        theFrame.getContentPane().add(background);
 
         // MENU BAR
         JMenuBar menuBar = new JMenuBar();
@@ -79,17 +78,25 @@ public class BeatBoxFinal {
         // LEFT SIDE
         JPanel westPanel = new JPanel();
         westPanel.setBorder(BorderFactory.createTitledBorder("Beats"));
-
+        
+        // Instrument names panel
+        // A bug with box layout? -
         Box instrumentsNameBox = new Box(BoxLayout.Y_AXIS);
+        /* NOT HELPING
+        GridLayout instrumentsGrid = new GridLayout(16, 1);
+        instrumentsGrid.setVgap(1);
+        instrumentsGrid.setHgap(1);
+        JPanel instrumentsNameBox = new JPanel(instrumentsGrid);
+        */
         for (int i = 0; i < 16; i++) {
             instrumentsNameBox.add(new Label(instrumentNames[i]));
         }
 
+        // Beats checkboxes grid
         GridLayout grid = new GridLayout(16, 16);
         grid.setVgap(1);
         grid.setHgap(1);
         checkBoxPanel = new JPanel(grid);
-        checkBoxList = new ArrayList<>();
         for (int i = 0; i < 256; i++) {
             JCheckBox cb = new JCheckBox();
             cb.setSelected(false);
@@ -186,21 +193,12 @@ public class BeatBoxFinal {
         background.add(BorderLayout.EAST, eastPanel);
 
         // FINISH
+        theFrame.getContentPane().add(BorderLayout.CENTER, background);
         theFrame.setJMenuBar(menuBar);
         theFrame.setResizable(false);
-        theFrame.setBounds(50, 50, 300, 300);
         theFrame.pack();
+        theFrame.setLocationRelativeTo(null);
         theFrame.setVisible(true);
-    }
-
-    boolean[] checkBoxesToBoolean() {
-        boolean[] checkBoxes = new boolean[256];
-        for (int i = 0; i < checkBoxList.size(); i++) {
-            if (checkBoxList.get(i).isSelected()) {
-                checkBoxes[i] = true;
-            }
-        }
-        return checkBoxes;
     }
 
     public class StartListener implements ActionListener {
@@ -322,7 +320,6 @@ public class BeatBoxFinal {
             if (nickname.equals("")) {
                 say("Please enter your nickname");
             } else {
-
                 String[] userInput = showConnectDialog();
                 if (isIPValid(userInput)) {
                     // Open connection to the server
@@ -334,6 +331,10 @@ public class BeatBoxFinal {
                     try {
                         System.out.println("Trying to connect to " + ip + ":" + userInput[4]);
                         Socket sock = new Socket(ip, Integer.parseInt(userInput[4]));
+                        //InetAddress ipAddr = InetAddress.getByName(ip);
+                        //Socket sock = new Socket();
+                        //sock.connect(ipAddr);
+                        
                         out = new ObjectOutputStream(sock.getOutputStream());
                         in = new ObjectInputStream(sock.getInputStream());
                         Thread remote = new Thread(new RemoteReader());
@@ -341,7 +342,7 @@ public class BeatBoxFinal {
                         sendIt.setEnabled(true);
                         userMessage.setEnabled(true);
                         incomingList.setEnabled(true);
-                    } catch (NumberFormatException | IOException ex) {
+                    } catch (Exception ex) {
                         say("Couldn’t connect - you’ll have to play alone.");
                     }
                 } else {
@@ -431,18 +432,18 @@ public class BeatBoxFinal {
             }
         }
     }
-
-    public class PlayListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent ev) {
-            /*if (mySequence != null) {
-                midiSound.setSequence(mySequence); // restore to my original
-            }*/
+    
+    private boolean[] checkBoxesToBoolean() {
+        boolean[] checkBoxes = new boolean[256];
+        for (int i = 0; i < checkBoxList.size(); i++) {
+            if (checkBoxList.get(i).isSelected()) {
+                checkBoxes[i] = true;
+            }
         }
+        return checkBoxes;
     }
 
-    public void changeSequence(boolean[] checkboxState) {
+    private void changeSequence(boolean[] checkboxState) {
         for (int i = 0; i < 256; i++) {
             JCheckBox check = (JCheckBox) checkBoxList.get(i);
             if (checkboxState[i]) {
