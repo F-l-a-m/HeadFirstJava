@@ -42,8 +42,8 @@ public class BeatBoxFinal {
 
     public void buildGUI() {
         // MenuBar is on top (check instrument box ?) -
-        // Disconnect before connect to new
         // List select on double click
+        // Disconnect before connect to new ?
         theFrame = new JFrame("Cyber beat box");
         JPanel background = new JPanel(new BorderLayout());
         background.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -236,25 +236,26 @@ public class BeatBoxFinal {
             chooser.showOpenDialog(theFrame);
             File selectedFile = chooser.getSelectedFile();
             if (selectedFile != null) {
-                boolean[] checkboxState = null;
+                boolean[] checkboxState;
                 try {
                     FileInputStream fs = new FileInputStream(selectedFile);
                     ObjectInputStream os = new ObjectInputStream(fs);
                     checkboxState = (boolean[]) os.readObject();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-                JCheckBox cb;
-                for (int i = 0; i < 256; i++) {
-                    cb = (JCheckBox) checkBoxList.get(i);
-                    if (checkboxState[i]) {
-                        cb.setSelected(true);
-                    } else {
-                        cb.setSelected(false);
+
+                    JCheckBox cb;
+                    for (int i = 0; i < 256; i++) {
+                        cb = (JCheckBox) checkBoxList.get(i);
+                        if (checkboxState[i]) {
+                            cb.setSelected(true);
+                        } else {
+                            cb.setSelected(false);
+                        }
                     }
+                    midiSound.sequencer.stop();
+                    midiSound.buildTrackAndStart(checkBoxesToBoolean());
+                } catch (IOException | ClassNotFoundException ex) {
+                    say("Incompatible file");
                 }
-                midiSound.sequencer.stop();
-                midiSound.buildTrackAndStart(checkBoxesToBoolean());
             }
         }
     }
