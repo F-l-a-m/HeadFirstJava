@@ -3,6 +3,7 @@ package Chapter_15;
 import Chapter_13.MidiSound;
 import java.awt.*;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.*;
 import java.util.*;
 import java.awt.event.*;
@@ -43,7 +44,6 @@ public class BeatBoxFinal {
         // MenuBar is on top (check instrument box ?) -
         // Disconnect before connect to new
         // List select on double click
-        // Make default files extension
         theFrame = new JFrame("Cyber beat box");
         JPanel background = new JPanel(new BorderLayout());
         background.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -232,9 +232,9 @@ public class BeatBoxFinal {
 
         @Override
         public void actionPerformed(ActionEvent ev) {
-            JFileChooser fileOpen = new JFileChooser();
-            fileOpen.showOpenDialog(theFrame);
-            File selectedFile = fileOpen.getSelectedFile();
+            JFileChooser chooser = new JFileChooser();
+            chooser.showOpenDialog(theFrame);
+            File selectedFile = chooser.getSelectedFile();
             if (selectedFile != null) {
                 boolean[] checkboxState = null;
                 try {
@@ -263,10 +263,13 @@ public class BeatBoxFinal {
 
         @Override
         public void actionPerformed(ActionEvent ev) {
-            JFileChooser fileSave = new JFileChooser();
-            fileSave.showSaveDialog(theFrame);
-            File selectedFile = fileSave.getSelectedFile();
-            if (selectedFile != null) {
+            JFileChooser chooser = new JFileChooser();
+            chooser.setFileFilter(new FileNameExtensionFilter("Bin file", "bt"));
+            File newFile = new File("NewBeat.bt");
+            chooser.setSelectedFile(newFile);
+            chooser.showSaveDialog(theFrame);
+            newFile = chooser.getSelectedFile();
+            if (newFile != null) {
                 boolean[] checkboxState = new boolean[256];
                 JCheckBox cb;
                 for (int i = 0; i < 256; i++) {
@@ -276,7 +279,7 @@ public class BeatBoxFinal {
                     }
                 }
                 try {
-                    FileOutputStream fs = new FileOutputStream(selectedFile);
+                    FileOutputStream fs = new FileOutputStream(newFile);
                     ObjectOutputStream os = new ObjectOutputStream(fs);
                     os.writeObject(checkboxState);
                 } catch (IOException ex) {
